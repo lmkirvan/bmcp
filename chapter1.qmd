@@ -1,0 +1,95 @@
+---
+title: "Untitled"
+format: typst
+---
+
+
+```{=typst}
+== _Metropolis-Hastings_
+
+- evaluate $ X = x_i $ to get an initial value
+- generate new value from a proposed distribution 
+
+$q(x_i+1 | x_i)$
+
+- compute the proability of accepting the new value 
+
+   $ p_a(x_1+1 | x_i) | = min(1, (p(x_1+1 ) q(x_i| x_i+1)) / (p(x_i) q(x_i+1| x_i)))$
+
+- if $p_a > R$ where $R ~ U(0,1)$ save proposal else save old value
+- iterate until you have n samples
+
+```
+
+
+
+```{=typst}
+== Beta binomial 
+
+
+$ theta ~ Beta(sigma, beta)$
+
+$Y ~ "Bin"(n = 1 , p = theta)$
+
+```
+
+
+```{python}
+import scipy.stats as stats
+import numpy as np
+
+
+def post(theta, y , sigma =  1, beta = 1):
+    if 0 <= theta <= 1:
+        prior = stats.beta(sigma, beta).pdf(theta)
+        like = stats.bernoulli(theta).pmf(Y).prod()
+        prob = like * prior
+    else: 
+        prob = -np.inf
+    return prob
+
+Y = stats.bernoulli(0.7).rvs(20)
+
+```
+
+
+```{python}
+n_iters = 1000
+can_sd  = 0.05
+sigma  = beta =  1
+theta = 0.5
+trace = {"theta": np.zeros(n_iters)}
+p2 = post(theta, Y, sigma, beta)
+
+for iter in range(n_iters):
+    theta_can = stats.norm(theta, can_sd).rvs(1)
+    p1 = post(theta_can, Y, sigma, beta)
+    pa = p1/ p2 
+
+    if pa > stats.uniform(0,1).rvs(1):
+        theta = theta_can
+        p2 = p1 
+
+    trace["theta"][iter] = theta 
+
+```
+
+
+```{python}
+import matplotlib.pyplot as plt
+
+_, axes = plt.subplots(1,2, sharey=True)
+axes[0].plot(trace['theta'], '0.5')
+axes[0].set_ylabel('theta', rotation=0, labelpad=15)
+axes[1].hist(trace['theta'], color='0.5', orientation="horizontal", density=True)
+axes[1].set_xticks([])
+```
+
+
+
+```{python}
+import arviz as az
+
+az.summary(trace, kind = "stats", round_to = 2)
+
+```

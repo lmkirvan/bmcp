@@ -1,0 +1,18 @@
+[project]
+name = "bmcp"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "arviz>=0.20.0",
+    "bambi>=0.15.0",
+    "ipython>=8.32.0",
+    "matplotlib>=3.10.0",
+    "numpy>=1.26.4",
+    "pandas>=2.2.3",
+    "pymc3>=3.11.4",
+    "scipy>=1.15.2",
+    "tensorflow-probability>=0.25.0",
+    "theano>=1.0.5",
+]

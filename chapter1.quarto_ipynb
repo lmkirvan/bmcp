@@ -1,0 +1,74 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "---\n",
+        "title: \"Untitled\"\n",
+        "format: typst\n",
+        "---\n",
+        "\n",
+        "```{=typst}\n",
+        "== _Metropolis-Hastings_\n",
+        "\n",
+        "- evaluate $ X = x_i $ to get an initial value\n",
+        "- generate new value from a proposed distribution \n",
+        "\n",
+        "$q(x_i+1 | x_i)$\n",
+        "\n",
+        "- compute the proability of accepting the new value \n",
+        "\n",
+        "   $ p_a(x_1+1 | x_i) | = min(1, (p(x_1+1 ) q(x_i| x_i+1)) / (p(x_i) q(x_i+1| x_i)))$\n",
+        "\n",
+        "- if $p_a > R$ where $R ~ U(0,1)$ save proposal else save old value\n",
+        "- iterate until you have n samples\n",
+        "\n",
+        "```\n",
+        "\n",
+        "```{=typst}\n",
+        "== Beta binomial \n",
+        "\n",
+        "\n",
+        "$ theta ~ Beta(sigma, beta)$\n",
+        "\n",
+        "$Y ~ \"Bin\"(n = 1 , p = theta)$\n",
+        "\n",
+        "```"
+      ],
+      "id": "b81eb2d2"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "import scipy.stats as stats\n",
+        "\n",
+        "\n",
+        "def post(theta, y , sigma =  1, beta = 1):\n",
+        "    if 0 <= theta <= 1:\n",
+        "        prior = stats.beta(sigma, beta).pdf(theta)\n",
+        "        like = stats.bernoulli(theta).pmf(Y).prod()\n",
+        "        prob = like * prior\n",
+        "    else: \n",
+        "        prob = -np.inf\n",
+        "    return rob\n",
+        "\n",
+        "Y = stats.bernoulli(0.7).rvs(20)"
+      ],
+      "id": "2fd70b17",
+      "execution_count": null,
+      "outputs": []
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "name": "python3",
+      "language": "python",
+      "display_name": "Python 3 (ipykernel)",
+      "path": "/home/kirvanlewis/.local/share/jupyter/kernels/python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}
