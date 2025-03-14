@@ -1,0 +1,74 @@
+---
+title: "chapter 2"
+format: typst
+---
+ 
+### bayesian p values 
+
+```{=typst}
+
+$ p Beta = p( attach(T, br:"sim") <= attach(T, br: "obs") | tilde(Y)) $ 
+
+
+```
+
+
+### Diagnostics
+
+
+```{python}
+from scipy import stats 
+import numpy as np
+
+stats.beta.rvs()
+
+good_chains = stats.beta.rvs(2, 5,size=(2, 2000))
+bad_chains0 = np.random.normal(np.sort(good_chains, axis=None), 0.05,
+                               size=4000).reshape(2, -1)
+
+bad_chains1 = good_chains.copy()
+for i in np.random.randint(1900, size=4):
+    bad_chains1[i%2:,i:i+100] = np.random.beta(i, 950, size=100)
+
+chains = {"good_chains":good_chains,
+          "bad_chains0":bad_chains0,
+          "bad_chains1":bad_chains1}
+```
+
+Effective sample size 
+
+
+```{python}
+import arviz as az
+
+print(az.ess(chains))
+
+```
+
+
+```{python}
+import matplotlib.pyplot as plt
+
+_, axes = plt.subplots(2, 3, figsize=(12, 6), sharey=True, sharex=True)
+az.plot_ess(chains, kind="local", ax=axes[0])
+az.plot_ess(chains, kind="quantile", ax=axes[1])
+
+for ax_ in axes[0]:
+    ax_.set_xlabel("")
+for ax_ in axes[1]:
+    ax_.set_title("")
+
+for ax_ in axes[:,1:].ravel():
+    ax_.set_ylabel("")
+plt.ylim(-100, 5000)
+```
+
+
+```{python}
+
+print(az.rhat(chains))
+print(az.mcse(chains))
+
+az.plot_mcse(chains)
+
+```

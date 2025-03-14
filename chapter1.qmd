@@ -1,6 +1,6 @@
 ---
 title: "Untitled"
-format: typst
+format: html
 ---
 
 
@@ -35,9 +35,29 @@ $Y ~ "Bin"(n = 1 , p = theta)$
 
 
 ```{python}
-import scipy.stats as stats
-import numpy as np
 
+import numpy as np
+from scipy import stats
+import pandas as pd
+from patsy import bs, dmatrix
+import matplotlib.pyplot as plt
+
+# Exploratory Analysis of Bayesian Models
+import arviz as az
+
+# Probabilistic programming languages
+import bambi as bmb
+import tensorflow_probability as tfp
+import pymc as pm
+
+tfd = tfp.distributions
+
+# Computational Backend
+import tensorflow as tf
+
+
+from scipy.stats import entropy
+from scipy.optimize import minimize
 
 def post(theta, y , sigma =  1, beta = 1):
     if 0 <= theta <= 1:
@@ -76,20 +96,99 @@ for iter in range(n_iters):
 
 
 ```{python}
-import matplotlib.pyplot as plt
 
 _, axes = plt.subplots(1,2, sharey=True)
 axes[0].plot(trace['theta'], '0.5')
 axes[0].set_ylabel('theta', rotation=0, labelpad=15)
 axes[1].hist(trace['theta'], color='0.5', orientation="horizontal", density=True)
 axes[1].set_xticks([])
+
+
 ```
-
-
 
 ```{python}
 import arviz as az
 
 az.summary(trace, kind = "stats", round_to = 2)
 
+```
+
+```{python}
+
+with pm.Model() as model:
+    theta = pm.Beta('theta', alpha=1, beta=1)
+    y_obs = pm.Binomial("y_obs", n=1, p=theta, observed=Y)
+    idata= pm.sample(1000, return_inferencedata=True)
+    ppdata = pm.sample_prior_predictive(1000, model)
+
+```
+
+Plot HDI for posterior samples
+
+```{python}
+
+az.plot_posterior(idata)
+
+# heres how you get the vaules of of inference data
+#cppdata.prior_predictive["y_obs"].values
+
+```
+
+Beta-binomial example for a different choices of priors and success ratios.
+
+
+```{python}
+_, axes = plt.subplots(2, 3, sharey=True, sharex=True)
+axes = np.ravel(axes)
+
+n_trials =  [0, 1, 2, 3, 12, 180]
+success = [0, 1, 1, 1, 6, 59]
+data = zip(n_trials, success)
+
+beta_params = [(0.5, 0.5), (1, 1), (10, 10)]
+theta = np.linspace(0,1, 1500)
+
+for idx, (N,y) in enumerate(data):
+    s_n = ("s" if (N> 1) else "")
+    for jdx, (a_prior, b_prior) in enumerate(beta_params):
+        p_theta_given_y = stats.beta.pdf(theta, a_prior +y, b_prior + N - y)
+
+        axes[idx].plot(theta, p_theta_given_y, lw=4)
+        axes[idx].set_yticks([])
+        axes[idx].set_ylim(0, 12)
+        axes[idx].plot(np.divide(y, N), 0, color="k", marker="o", ms=12)
+        axes[idx].set_title(f"{N:4d} trials{s_n} {y:4d} success")
+
+
+    
+```
+
+MaxEnt Priors 
+
+- solve a (potentially constrained) optimization problem 
+
+
+```{python}
+
+plt.close()
+
+cons = [[{"type": "eq", "fun": lambda x: np.sum(x) - 1}],
+        [{"type": "eq", "fun": lambda x: np.sum(x) - 1},
+         {"type": "eq", "fun": lambda x: 1.5 - np.sum(x * np.arange(1, 7))}],
+        [{"type": "eq", "fun": lambda x: np.sum(x) - 1},
+         {"type": "eq", "fun": lambda x: np.sum(x[[2, 3]]) - 0.8}]]
+
+max_ent = []
+for i, c in enumerate(cons):
+    val = minimize(lambda x: -entropy(x), x0=[1/6]*6, bounds=[(0., 1.)] * 6,
+                   constraints=c)['x']
+    max_ent.append(entropy(val))
+    plt.plot(np.arange(1, 7), val, 'o--',  lw=2.5)
+    
+plt.xlabel("$t$")
+plt.ylabel("$p(t)$")
+
+
+
+plt.show()
 ```
