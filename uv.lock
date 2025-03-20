@@ -111,7 +111,6 @@ dependencies = [
     { name = "tensorflow", extra = ["and-cuda"] },
     { name = "tensorflow-probability" },
     { name = "tf-keras" },
-    { name = "theano" },
 ]
 
 [package.metadata]
@@ -130,7 +129,6 @@ requires-dist = [
     { name = "tensorflow", extras = ["and-cuda"], specifier = ">=2.18.0" },
     { name = "tensorflow-probability", specifier = ">=0.25.0" },
     { name = "tf-keras", specifier = ">=2.18.0" },
-    { name = "theano", specifier = ">=1.0.5" },
 ]
 
 [[package]]
@@ -2038,17 +2036,6 @@ sdist = { url = "https://files.pythonhosted.org/packages/a9/a4/7d0acc28cde2b29b8
 wheels = [
     { url = "https://files.pythonhosted.org/packages/8a/ed/e08afca471299b04a34cd548e64e89d0153eda0e6cf9b715356777e24774/tf_keras-2.18.0-py3-none-any.whl", hash = "sha256:c431d04027eef790fcd3261cf7fdf93eb74f3cb32e05078b57b7f5a54bd53262", size = 1725427 },
 ]
-
-[[package]]
-name = "theano"
-version = "1.0.5"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "numpy" },
-    { name = "scipy" },
-    { name = "six" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/6b/97/bcd5654ba60f35f180931afabbd3b4c46c0379852f961c7a2819ff897f5d/Theano-1.0.5.tar.gz", hash = "sha256:6e9439dd53ba995fcae27bf20626074bfc2fff446899dc5c53cb28c1f9202e89", size = 2842778 }
 
 [[package]]
 name = "threadpoolctl"

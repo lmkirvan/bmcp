@@ -19,5 +19,4 @@ dependencies = [
     "tensorflow-probability>=0.25.0",
     "tensorflow[and-cuda]>=2.18.0",
     "tf-keras>=2.18.0",
-    "theano>=1.0.5",
 ]
