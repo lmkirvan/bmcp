@@ -1,0 +1,140 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "---\n",
+        "title: \"basketball\"\n",
+        "format: html\n",
+        "---"
+      ],
+      "id": "81e1107d"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "import requests\n",
+        "\n",
+        "url = \"https://kenpom.com/cbbga25.txt\"\n",
+        "file_path = \"./baskteball.txt\"\n",
+        "\n",
+        "try:\n",
+        "    response = requests.get(url, stream=True)\n",
+        "    response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx)\n",
+        "    with open(file_path, 'wb') as file:\n",
+        "        for chunk in response.iter_content(chunk_size=8192):\n",
+        "            file.write(chunk)\n",
+        "    print(f\"File downloaded successfully to {file_path}\")\n",
+        "except requests.exceptions.RequestException as e:\n",
+        "    print(f\"An error occurred: {e}\")"
+      ],
+      "id": "380dece7",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "import pandas as pd \n",
+        "import numpy as np\n",
+        "import bambi as bmb\n",
+        "import arviz as az"
+      ],
+      "id": "08d81bba",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "# should write a column spec for this \n",
+        "df = pd.read_fwf('baskteball.txt')\n",
+        "df.columns = ['date', 'team1', 'score1', 'team2', \"score2\", \"single_char\", \"loc1\", \"loc2\"]\n",
+        "df['full_loc'] = [x + y for x,y in zip(df['loc1'],df[\"loc2\"])]\n",
+        "df.drop(columns=['loc1', 'loc2'], axis=1, inplace=True)\n",
+        "\n",
+        "df['point_diff1'] = df['score1'] - df['score2']\n",
+        "df['point_diff2'] = df['score2'] - df['score1']\n",
+        "\n",
+        "df['total_score'] = df['score1'] + df['score2']\n",
+        "df['winning_team'] = [team1 if score1 > score2 else team2 \n",
+        "                    for team1, score1, team2, score2\n",
+        "                    in zip(\n",
+        "                        df['team1'],\n",
+        "                        df['score1'],\n",
+        "                        df['team2'],\n",
+        "                        df['score2']\n",
+        "                    ) ]\n",
+        "\n",
+        "teams =  df['team1'].unique().tolist() +  df['team2'].unique().tolist()\n",
+        "teams = list(set(teams))\n",
+        "\n",
+        "res = {}\n",
+        "for team in teams:\n",
+        "    tdf = df.loc[ (df['team1'] == team) | (df['team2'] == team)]\n",
+        "    tdf.sort_values('date', inplace=True)\n",
+        "    tdf['point_diff'] = [\n",
+        "        point_diff2 if team == team2 else point_diff1\n",
+        "        for  point_diff1, point_diff2, team2 \n",
+        "        in zip(tdf['point_diff1'], tdf['point_diff2'], tdf['team2'])\n",
+        "        ] \n",
+        "    tdf['win'] = [1 if team == winner else 0 for winner in tdf['winning_team']]\n",
+        "    tdf['cum_wins'] = np.cumsum(tdf['win'])\n",
+        "    tdf['games_played'] = np.arange(len(tdf)) + 1\n",
+        "    tdf['win_record']  = tdf[\"cum_wins\"] / tdf['games_played']\n",
+        "    tdf['team'] = team\n",
+        "    tdf['opposing_team'] = [\n",
+        "        team1 if team == team2 else team2 \n",
+        "        for team1, team2 \n",
+        "        in zip(tdf['team1'], tdf['team2'])\n",
+        "        ]\n",
+        "\n",
+        "    res[team] = tdf[ ['team', 'date', 'cum_wins', \"games_played\", \"win_record\", 'opposing_team', 'point_diff'] ]\n",
+        "\n",
+        "# then join it to it itself by opposing team I think?\n",
+        "\n",
+        "final_df = pd.concat(res)\n",
+        "opposing_df = final_df[ ['team', 'win_record', 'date','games_played'] ]\n",
+        "opposing_df.columns = ['opposing_team', \"owr\", 'date', 'ogp']\n",
+        "final_df = pd.merge(final_df, opposing_df, how = \"left\", on = ['opposing_team', 'date'])\n",
+        "\n",
+        "final_df.to_csv(\"long.csv\")"
+      ],
+      "id": "d491e5f7",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "df = pd.read_csv('long.csv')\n",
+        "\n",
+        "model = bmb.Model(\"point_diff ~  ogp*owr + ( 1|  team)\", df, categorical=\"team\")\n",
+        "\n",
+        "idata = model.fit()\n",
+        "temp = az.summary(idata)!\n",
+        "az.plot_trace(idata, )\n",
+        "\n",
+        "m_0 = bmb.Model(\"point_diff ~  ogp*owr + ( 1|  team)\", df, categorical=\"team\")\n"
+      ],
+      "id": "8db5901d",
+      "execution_count": null,
+      "outputs": []
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "name": "python3",
+      "language": "python",
+      "display_name": "Python 3 (ipykernel)",
+      "path": "/home/kirvanlewis/.local/share/jupyter/kernels/python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}

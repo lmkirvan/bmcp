@@ -6187,3 +6187,35 @@
 03/19/2025 Northern Iowa           63 SMU                     73 P  
 03/19/2025 Xavier                  86 Texas                   80 NP  Dayton, OH
 03/19/2025 Northern Colorado       72 UC Irvine               82 P  
+03/20/2025 Alabama St.             63 Auburn                  83 NP  Lexington, KY
+03/20/2025 VCU                     71 BYU                     80 NP  Denver, CO
+03/20/2025 McNeese                 69 Clemson                 67 NP  Providence, RI
+03/20/2025 Georgia                 68 Gonzaga                 89 NP  Wichita, KS
+03/20/2025 SIUE                    40 Houston                 78 NP  Wichita, KS
+03/20/2025 Arkansas                79 Kansas                  72 NP  Providence, RI
+03/20/2025 Creighton               89 Louisville              75 NP  Lexington, KY
+03/20/2025 UC San Diego            65 Michigan                68 NP  Denver, CO
+03/20/2025 Drake                   67 Missouri                57 NP  Wichita, KS
+03/20/2025 High Point              63 Purdue                  75 NP  Providence, RI
+03/20/2025 Nebraska Omaha          53 St. John's              83 NP  Providence, RI
+03/20/2025 Wofford                 62 Tennessee               77 NP  Lexington, KY
+03/20/2025 Yale                    71 Texas A&M               80 NP  Denver, CO
+03/20/2025 UNC Wilmington          72 Texas Tech              82 NP  Wichita, KS
+03/20/2025 Utah St.                47 UCLA                    72 NP  Lexington, KY
+03/20/2025 Montana                 66 Wisconsin               85 NP  Denver, CO
+03/21/2025 Robert Morris           81 Alabama                 90 NP  Cleveland, OH
+03/21/2025 Akron                   65 Arizona                 93 NP  Seattle, WA
+03/21/2025 Oklahoma                59 Connecticut             67 NP  Raleigh, NC
+03/21/2025 Mount St. Mary's        49 Duke                    93 NP  Raleigh, NC
+03/21/2025 Norfolk St.             69 Florida                 95 NP  Raleigh, NC
+03/21/2025 Xavier                  73 Illinois                86 NP  Milwaukee, WI
+03/21/2025 Lipscomb                55 Iowa St.                82 NP  Milwaukee, WI
+03/21/2025 Troy                    57 Kentucky                76 NP  Milwaukee, WI
+03/21/2025 New Mexico              75 Marquette               66 NP  Cleveland, OH
+03/21/2025 Grand Canyon            49 Maryland                81 NP  Seattle, WA
+03/21/2025 Colorado St.            78 Memphis                 70 NP  Seattle, WA
+03/21/2025 Bryant                  62 Michigan St.            87 NP  Cleveland, OH
+03/21/2025 North Carolina          64 Mississippi             71 NP  Milwaukee, WI
+03/21/2025 Baylor                  75 Mississippi St.         72 NP  Raleigh, NC
+03/21/2025 Liberty                 52 Oregon                  81 NP  Seattle, WA
+03/21/2025 Vanderbilt              56 Saint Mary's            59 NP  Cleveland, OH

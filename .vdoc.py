@@ -1,10 +1,12 @@
----
-title: "basketball"
-format: html
----
-
-
-```{python}
+# type: ignore
+# flake8: noqa
+#
+#
+#
+#
+#
+#
+#
 import requests
 
 url = "https://kenpom.com/cbbga25.txt"
@@ -20,9 +22,9 @@ try:
 except requests.exceptions.RequestException as e:
     print(f"An error occurred: {e}")
 
-```
-
-```{python}
+#
+#
+#
 
 import pandas as pd 
 import numpy as np
@@ -33,9 +35,9 @@ import arviz as az
 import numpy as np
 import xarray as xr
 
-```
-
-```{python}
+#
+#
+#
 
 # should write a column spec for this 
 df = pd.read_fwf('baskteball.txt')
@@ -90,11 +92,11 @@ final_df = pd.merge(final_df, opposing_df, how = "left", on = ['opposing_team', 
 
 final_df.to_csv("long.csv")
 
-```
-
-
-
-```{python}
+#
+#
+#
+#
+#
 
 df = pd.read_csv('long.csv')
 
@@ -116,4 +118,6 @@ idata.posterior.dims
 
 m_0 = bmb.Model("point_diff ~  ogp*owr + ( 1|  team)", df, categorical="team")
 
-```
+#
+#
+#
